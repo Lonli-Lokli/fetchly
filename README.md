@@ -9,8 +9,7 @@ Fetchly is a modern, scalable application designed to simplify and accelerate da
 - **Unified Data Fetching:** Consistent APIs for REST, GraphQL, and other data sources.
 - **Plugin Architecture:** Easily extend Fetchly with custom plugins and integrations.
 - **Type Safety:** Built with TypeScript for end-to-end type safety.
-- **Modern Tooling:** Uses Nx for monorepo management, but Fetchly is framework-agnostic.
-- **Optimized for DX:** Fast builds, hot reload, and intuitive CLI.
+- **Modern Tooling:** Uses Nx for monorepo management.
 
 ---
 
