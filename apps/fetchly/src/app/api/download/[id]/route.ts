@@ -65,16 +65,9 @@ export async function GET(
 
     // Create response headers
     const headers = new Headers();
-    headers.set('Content-Type', contentType);
+    headers.set('Content-Type', 'application/octet-stream');
     headers.set('Content-Disposition', `attachment; filename="${downloadFilename}"`);
     
-    if (contentLength) {
-      headers.set('Content-Length', contentLength);
-    }
-
-    // Optional: Remove the URL from store after first use (one-time links)
-    // urlStore.delete(id);
-
     // Return the streamed response
     return new NextResponse(response.body, {
       status: 200,
