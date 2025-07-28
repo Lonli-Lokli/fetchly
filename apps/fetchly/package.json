@@ -1,5 +1,5 @@
 {
-  "name": "@fetchly/fetchly",
+  "name": "fetchly",
   "version": "0.0.1",
   "private": true,
   "dependencies": {

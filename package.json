@@ -2,12 +2,16 @@
   "name": "@fetchly/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build": "nx run fetchly:build",
+    "start": "nx run fetchly:start"
+  },
   "private": true,
   "dependencies": {
     "next": "~15.2.4",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "brotli-compress": "1.3.3"
   },
   "devDependencies": {
     "@eslint/compat": "^1.1.1",
