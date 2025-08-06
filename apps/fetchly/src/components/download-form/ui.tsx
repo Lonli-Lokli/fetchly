@@ -38,7 +38,7 @@ export function DownloadForm() {
       }
 
       const { id, fn } = await encodeResponse.json();
-      router.push(`/api/download/${id}?fn=${fn}`);
+      router.push(`/api/transform/${id}?fn=${fn}`);
     } catch (error: any) {
       setError(`Error: ${error.message}`);
     }
