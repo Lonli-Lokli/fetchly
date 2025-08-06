@@ -36,7 +36,6 @@ export async function GET(
 
     // Get content info
     const contentType = response.headers.get('content-type') || 'application/octet-stream';
-    const contentLength = response.headers.get('content-length');
 
     // Determine filename
     let downloadFilename = filename;
@@ -65,7 +64,7 @@ export async function GET(
 
     // Create response headers
     const headers = new Headers();
-    headers.set('Content-Type', 'application/octet-stream');
+    headers.set('Content-Type', getContentTypeFromExtension((downloadFilename ?? '').split('.').pop() || ''));
     headers.set('Content-Disposition', `attachment; filename="${downloadFilename}"`);
     
     // Return the streamed response
@@ -100,4 +99,25 @@ function getExtensionFromContentType(contentType: string): string {
   
   const baseType = contentType.split(';')[0].toLowerCase();
   return mimeToExt[baseType] || '';
+}
+
+function getContentTypeFromExtension(extension: string): string {
+  const extToMime: { [key: string]: string } = {
+    'pdf': 'application/pdf',
+    'jpg': 'image/jpeg',
+    'png': 'image/png',
+    'gif': 'image/gif',
+    'txt': 'text/plain',
+    'zip': 'application/zip',
+    'json': 'application/json',
+    'html': 'text/html',
+    'css': 'text/css',
+    'js': 'application/javascript',
+    'mp4': 'video/mp4',
+    'mp3': 'audio/mpeg',
+    'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  };
+  
+  return extToMime[extension.toLowerCase()] || 'application/octet-stream';
 }
