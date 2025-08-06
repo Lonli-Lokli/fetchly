@@ -66,7 +66,6 @@ export async function GET(
     const headers = new Headers();
     headers.set('Content-Type', getContentTypeFromExtension((downloadFilename ?? '').split('.').pop() || ''));
     headers.set('Content-Disposition', `attachment; filename="${downloadFilename}"`);
-    headers.set('Content-Length', (Math.floor(Math.random() * (1000 - 100 + 1)) + 100).toString());
     
     // Return the streamed response
     return new NextResponse(response.body, {
