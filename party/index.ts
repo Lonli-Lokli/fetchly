@@ -1,31 +1,25 @@
 import type * as Party from "partykit/server";
 
-// IMPORTANT: Replace with your deployed Next.js app's URL in production
-const NEXTJS_HOST = 'http://fetchly.vercel.app/';
-
 export default class DownloadServer implements Party.Server {
   constructor(readonly room: Party.Room) {}
 
   async onMessage(message: string, sender: Party.Connection) {
-    const { type, id, fn } = JSON.parse(message);
+    const { type, streamUrl, fileName} = JSON.parse(message);
 
-    if (type !== "start-download" || !id) {
-      sender.send(JSON.stringify({ type: 'error', message: 'ID is missing' }));
+    if (type !== "start-download" || !streamUrl) {
+      sender.send(JSON.stringify({ type: 'error', message: 'streamUrl is missing' }));
       return;
     }
 
     try {
       // Call our Next.js endpoint to get the file stream
-      const streamUrl = `${NEXTJS_HOST}/api/transform/${id}?fn=${fn || ''}&stream=true`;
       const response = await fetch(streamUrl);
 
       if (!response.ok || !response.body) {
-        throw new Error(`Failed to fetch stream from Next.js: ${response.statusText}`);
+        throw new Error(`Failed to fetch stream: ${response.statusText}`);
       }
 
-      // Get filename from the header set by our Next.js route
-      const filename = decodeURIComponent(response.headers.get('x-filename') || 'download');
-      sender.send(JSON.stringify({ type: 'download-start', filename }));
+      sender.send(JSON.stringify({ type: 'download-start', fileName: fileName || 'download'  }));
 
       const reader = response.body.getReader();
       while (true) {

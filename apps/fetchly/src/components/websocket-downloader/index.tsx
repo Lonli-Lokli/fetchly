@@ -40,12 +40,11 @@ export function WebsocketDownloader() {
   // usePartySocket hook to manage the WebSocket connection
   const socket = usePartySocket({
     host: process.env.NEXT_PUBLIC_PARTYKIT_HOST || '127.0.0.1:1999',
-    room: 'index',
     // The socket will only connect when this component is rendered (i.e., when `download` is not null)
     onOpen: () => {
       // When the connection opens, send the start message
       if (download) {
-        socket.send(JSON.stringify({ type: 'start-download', id: download.id, fn: download.fn }));
+        socket.send(JSON.stringify({ type: 'start-download', streamUrl: download.id, fileName: download.fn }));
       }
     },
     onMessage: (event: MessageEvent) => {
