@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import usePartySocket from 'partysocket/react';
+import { nanoid } from 'nanoid';
 
 type DownloadState = {
   id: string;
@@ -12,6 +13,7 @@ type DownloadState = {
   receivedBytes: number;
 };
 
+const roomId = nanoid();
 export function WebsocketDownloader() {
   const [download, setDownload] = useState<DownloadState | null>(null);
   // Ensure chunks are stored in a type compatible with the Blob constructor
@@ -39,7 +41,8 @@ export function WebsocketDownloader() {
 
   // usePartySocket hook to manage the WebSocket connection
   const socket = usePartySocket({
-    host: process.env.NEXT_PUBLIC_PARTYKIT_HOST || '127.0.0.1:1999',
+    host: process.env.NEXT_PUBLIC_PARTYKIT_HOST,
+    room: roomId,
     // The socket will only connect when this component is rendered (i.e., when `download` is not null)
     onOpen: () => {
       // When the connection opens, send the start message
@@ -53,6 +56,11 @@ export function WebsocketDownloader() {
         const chunk = new Uint8Array(event.data);
         setChunks(prev => [...prev, chunk]);
         setDownload(prev => prev ? { ...prev, receivedBytes: prev.receivedBytes + chunk.byteLength } : null);
+      } else if (event.data instanceof Blob) {
+        // Handle binary chunk from Blob
+        const chunk = event.data;
+        setChunks(prev => [...prev, chunk]);
+        setDownload(prev => prev ? { ...prev, receivedBytes: prev.receivedBytes + chunk.size } : null);
       } else {
         // Handle JSON message
         try {

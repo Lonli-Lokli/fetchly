@@ -1,6 +1,6 @@
 {
   "$schema": "https://www.partykit.io/schema.json",
-  "name": "fetchly-source-party",
+  "name": "pipename",
   "main": "party/index.ts",
   "compatibilityDate": "2025-09-09"
 }

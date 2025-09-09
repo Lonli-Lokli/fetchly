@@ -47,7 +47,7 @@ export function DownloadForm() {
         // Example: open a modal or start Ably/WebSocket download
         window.dispatchEvent(
           new CustomEvent('start-websocket-download', {
-            detail: { id, fn }
+            detail: { id: fileUrl.trim(),  fn: fileName?.trim() || undefined }
           })
         );
       }
@@ -127,7 +127,7 @@ export function DownloadForm() {
               onChange={() => setDownloadMethod('websocket')}
               className="form-radio"
             />
-            <span>WebSockets (PartyKit)</span>
+            <span>WebSockets</span>
           </label>
         </div>
       </div>
