@@ -9,6 +9,7 @@ export function DownloadForm() {
   const [fileName, setFileName] = useState('');
   const [error, setError] = useState('');
   const [shortUrl] = useState('');
+  const [downloadMethod, setDownloadMethod] = useState<'rest' | 'websocket'>('rest');
 
   const handleDownload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +39,18 @@ export function DownloadForm() {
       }
 
       const { id, fn } = await encodeResponse.json();
-      router.push(`/api/transform/${id}?fn=${fn}`);
+
+      if (downloadMethod === 'rest') {
+        router.push(`/api/transform/${id}?fn=${fn}`);
+      } else {
+        // WebSocket download logic (replace with your actual implementation)
+        // Example: open a modal or start Ably/WebSocket download
+        window.dispatchEvent(
+          new CustomEvent('start-websocket-download', {
+            detail: { id, fn }
+          })
+        );
+      }
     } catch (error: any) {
       setError(`Error: ${error.message}`);
     }
@@ -88,6 +100,36 @@ export function DownloadForm() {
         <p className="text-xs text-gray-500 mt-1">
           Include the extension you want (e.g., .pdf, .jpg, .zip)
         </p>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Download method
+        </label>
+        <div className="flex space-x-4">
+          <label className="flex items-center space-x-2">
+            <input
+              type="radio"
+              name="downloadMethod"
+              value="rest"
+              checked={downloadMethod === 'rest'}
+              onChange={() => setDownloadMethod('rest')}
+              className="form-radio"
+            />
+            <span>REST endpoint</span>
+          </label>
+          <label className="flex items-center space-x-2">
+            <input
+              type="radio"
+              name="downloadMethod"
+              value="websocket"
+              checked={downloadMethod === 'websocket'}
+              onChange={() => setDownloadMethod('websocket')}
+              className="form-radio"
+            />
+            <span>WebSockets (PartyKit)</span>
+          </label>
+        </div>
       </div>
 
       <button

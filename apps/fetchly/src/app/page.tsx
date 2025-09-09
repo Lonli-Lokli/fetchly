@@ -1,4 +1,5 @@
 import { DownloadForm } from '@/components/download-form';
+import { WebsocketDownloader } from '@/components/websocket-downloader';
 
 export default function Index() {
   /*
@@ -23,13 +24,16 @@ export default function Index() {
             <ul className="space-y-2 text-sm text-gray-600">
               <li>• Enter the URL of the file you want to download</li>
               <li>• Specify a custom filename with extension</li>
-              <li>• The file will be streamed through this server's domain</li>
+              <li>• Choose Transport (REST or WebSockets)</li>
+              <li>• The file will be streamed through this server&apos;s domain</li>
               <li>• Useful when direct access to the file URL is blocked</li>
               <li>• Server-side processing with client-side form</li>
             </ul>
           </div>
         </div>
       </div>
+      <WebsocketDownloader />
     </div>
   );
 }
+
