@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import usePartySocket from 'partysocket/react';
 import { nanoid } from 'nanoid';
+import ReconnectingWebSocket from 'partysocket/ws';
 
 type DownloadState = {
   id: string;
@@ -43,13 +44,6 @@ export function WebsocketDownloader() {
   const socket = usePartySocket({
     host: process.env.NEXT_PUBLIC_PARTYKIT_HOST,
     room: roomId,
-    // The socket will only connect when this component is rendered (i.e., when `download` is not null)
-    onOpen: () => {
-      // When the connection opens, send the start message
-      if (download) {
-        socket.send(JSON.stringify({ type: 'start-download', streamUrl: download.id, fileName: download.fn }));
-      }
-    },
     onMessage: (event: MessageEvent) => {
       if (event.data instanceof ArrayBuffer) {
         // Handle binary chunk
@@ -85,6 +79,14 @@ export function WebsocketDownloader() {
       setDownload(prev => prev ? { ...prev, status: 'error', error: 'WebSocket connection failed.' } : null);
     }
   });
+
+  // This effect will run when the socket connects OR when the download state is set
+  useEffect(() => {
+    // Only send the message if the socket is open and we have a download to start
+    if (socket.readyState === ReconnectingWebSocket.OPEN && download?.status === 'connecting') {
+      socket.send(JSON.stringify({ type: 'start-download', streamUrl: download.id, fileName: download.fn }));
+    }
+  }, [socket.readyState, download, socket]);
 
   // This effect runs when the download is complete to save the file
   useEffect(() => {
